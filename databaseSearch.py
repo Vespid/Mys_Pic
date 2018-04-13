@@ -111,12 +111,18 @@ def load_images(imagePath):
                     dataInsert=(og_img,img_colors)
                     insert_data(conn,dataInsert)
 
-def find_solution(database,img):
+def find_solution(database,img,rType):
     print("Searching...")
     t1=time.time()
-    colors=getColors(img,"list")
-    colors=getDominantColors(img)
-    print(colors)
+
+    if rType=="d":
+        colors=getDominantColors(img)
+        print(colors)
+    elif type(rType)==list:
+        colors=rType
+    else:
+        colors=getColors(img,"list")
+
     conn=create_connection(database)
     solution=select_data(conn,colors)
     print("Time: ", time.time()-t1)
@@ -126,8 +132,10 @@ def main():
     #User parameters
     database="MysPic.db" #location of image database
     imagepath="images"  #location of images
+
     mysPic=r"F:\Programming\Projects\Mystery_Pic\1507_24653.gif" #location of mystery pic
-    
+
+
     #Creates database and loads images if it does not exist
 #    if os.path.isfile(database):
 #        conn=create_connection(database)
@@ -143,8 +151,9 @@ def main():
 #            create_table(conn,picData)
 #        load_images(imagepath)
     
-    #find solution of Mystery Pic in database    
-    find_solution(database,mysPic)  
+    #find solution of Mystery Pic in database
+    find_solution(database,mysPic,"d")    
+#    find_solution(database,mysPic,["#CCD5CC","#99AACC","#66AACC","#665533"])  
     
 if __name__=="__main__":
     main()  
