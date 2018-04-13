@@ -45,10 +45,12 @@ def select_data(conn,colors):
     rows=c.fetchall()
     if len(rows)>0:
         print("Solution Found:")
-        for row in rows:
-            print(row[1])
+        sols=[row[1] for row in rows]
+        print(sols)
+        return sols
     else:
         print("No solution found")
+        return None
 
 def rgb2hex(t):
     r, g, b = t
@@ -79,7 +81,7 @@ def getDominantColors(path):
     colors=[]
     for k in range(0,x):
         for i in range(0,y):
-            r, g, b = im.getpixel((i, k))
+            r, g, b = im.getpixel((k, i))
             colors.append(rgb2hex((r,g,b)))
             
     count={}
@@ -88,9 +90,9 @@ def getDominantColors(path):
             count[color]+=1
         else:
             count[color]=1
-            
+    print(count)        
     sortedColors=[x for _,x in sorted(zip(list(count.values()),list(count.keys())), reverse=True)]
-    return sortedColors[0:3]
+    return sortedColors[0:2]
 
 def load_images(imagePath):
     database="MysPic.db"
@@ -113,16 +115,18 @@ def find_solution(database,img):
     print("Searching...")
     t1=time.time()
     colors=getColors(img,"list")
-#    colors=getDominantColors(img)
+    colors=getDominantColors(img)
+    print(colors)
     conn=create_connection(database)
-    select_data(conn,colors)
+    solution=select_data(conn,colors)
     print("Time: ", time.time()-t1)
+    return solution
     
 def main():
     #User parameters
     database="MysPic.db" #location of image database
     imagepath="images"  #location of images
-    mysPic=r"F:\Programming\Projects\Mystery_Pic\Past\New folder\225_files\225_62221.gif" #location of mystery pic
+    mysPic=r"F:\Programming\Projects\Mystery_Pic\1507_24653.gif" #location of mystery pic
     
     #Creates database and loads images if it does not exist
 #    if os.path.isfile(database):
